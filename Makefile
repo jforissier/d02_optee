@@ -175,7 +175,7 @@ install-optee-client: optee-client
 	$(Q)chmod a+x $(DESTDIR)/etc/init.d/optee
 	$(ECHO) '  LN      $(DESTDIR)/etc/rc5.d/S99optee'
 	$(Q)mkdir -p $(DESTDIR)/etc/rc5.d
-	$(Q)ln -s /etc/init.d/optee $(DESTDIR)/etc/rc5.d/S99optee
+	$(Q)ln -sf /etc/init.d/optee $(DESTDIR)/etc/rc5.d/S99optee
 
 install-only: install-optee-client
 

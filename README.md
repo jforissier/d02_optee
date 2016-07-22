@@ -70,10 +70,39 @@ make install DESTDIR=/path/to/Debian_ARM64
 
 TODO.
 - Use PyPXE to set up a PXE environment.
-- Start FTPd to get and flash new BIOS (PV660D02.fd) and DTB (hip05-d02.dtb)
-from the EBL menu.
+
 - Configure NFS to export the root FS, such as Debian (Debian_ARM64 folder)
 so that the kernel can mount root over NFS.
+
+- Start FTPd to get and flash new BIOS (PV660D02.fd) and DTB (hip05-d02.dtb)
+from the EBL menu.
+You may create a user account called "d02" with password "d02" for instance.
+Create links:
+~d02/PV660D02.fd -> <path>/d02_optee/uefi/Build/Pv660D02/DEBUG_GCC49/FV/PV660D02.fd
+~d02/hip05-d02.dtb -> <path>/d02_optee/linux/arch/arm64/boot/dts/hisilicon/hip05-d02.dtb
+Start the FTP daemon:
+```
+  sudo ftpd -D
+```
+
+- Flash the binaries
+Reboot the D02 board. If needed: Ctrl+T Ctrl+L to change EOL (e.g., if the
+return key does not work).
+Enter EBL, type:
+```
+  provision 192.168.1.10 -u d02 -p d02 -f PV660D02.fd -a 100000
+  spiwfmem 100000 0000000 300000
+```
+To update the DTB:
+```
+  provision 192.168.1.10 -u d02 -p d02 -f hip05-d02.dtb -a 0x100000
+  spiwfmem 0x100000 0x300000 0x100000
+```
+
+Then reboot by pressing the reset button or typing:
+```
+  reset
+```
 
 ## Links
 

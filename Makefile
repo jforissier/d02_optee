@@ -133,9 +133,11 @@ clean: clean-arm-trusted-firmware
 # OP-TEE OS
 #
 
+CFG_TEE_CORE_LOG_LEVEL ?= 2
+
 optee-os-flags := PLATFORM=d02
 optee-os-flags += DEBUG=0
-optee-os-flags += CFG_TEE_CORE_LOG_LEVEL=2 # 0=none 1=err 2=info 3=debug 4=flow
+optee-os-flags += CFG_TEE_CORE_LOG_LEVEL=$(CFG_TEE_CORE_LOG_LEVEL) # 0=none 1=err 2=info 3=debug 4=flow
 optee-os-flags += CFG_TEE_TA_LOG_LEVEL=3
 optee-os-flags += CFG_ARM64_core=y
 optee-os-flags += CROSS_COMPILE32="$(CROSS_COMPILE32)" CROSS_COMPILE64="$(CROSS_COMPILE64)"

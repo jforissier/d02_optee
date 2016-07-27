@@ -98,13 +98,20 @@ distclean: distclean-grub
 # ARM Trusted Firmware
 #
 
-BL1 = arm-trusted-firmware/build/d02/debug/bl1.bin
-BL32 = optee_os/out/arm-plat-d02/core/tee.bin
-FIP = arm-trusted-firmware/build/d02/debug/fip.bin
+ARMTF_DEBUG = 1
 
 ARMTF_FLAGS := PLAT=d02
-ARMTF_FLAGS += DEBUG=1
-ARMTF_FLAGS += LOG_LEVEL=50 # 10=error 20=notice 30=warning 40=info 50=verbose
+
+ifeq ($(ARMTF_DEBUG),1)
+BL1 = arm-trusted-firmware/build/d02/debug/bl1.bin
+FIP = arm-trusted-firmware/build/d02/debug/fip.bin
+ARMTF_FLAGS += DEBUG=1 LOG_LEVEL=50 # 10=error 20=notice 30=warning 40=info 50=verbose
+else
+BL1 = arm-trusted-firmware/build/d02/release/bl1.bin
+FIP = arm-trusted-firmware/build/d02/release/fip.bin
+endif
+
+BL32 = optee_os/out/arm-plat-d02/core/tee.bin
 
 ARMTF_EXPORTS += CROSS_COMPILE='$(CROSS_COMPILE64)'
 
@@ -276,6 +283,14 @@ clean: clean-linux
 # UEFI
 #
 
+UEFI_DEBUG = 1
+
+ifeq ($(UEFI_DEBUG),1)
+UEFI_DEB_OR_REL = DEBUG
+else
+UEFI_DEB_OR_REL = RELEASE
+endif
+
 UEFI_BIN = uefi/OpenPlatformPkg/Platforms/Hisilicon/Binary/D02
 UEFI_BL1 = $(UEFI_BIN)/bl1.bin
 UEFI_FIP = $(UEFI_BIN)/fip.bin
@@ -305,7 +320,7 @@ uefi: arm-trusted-firmware uefi-check-arm-tf-links
 	$(ECHO) '  BUILD   $@'
 	$(Q)export GCC49_AARCH64_PREFIX="$(CROSS_COMPILE64)" ; \
 	    cd uefi ; \
-	    ./uefi-tools/uefi-build.sh -b DEBUG -c LinaroPkg/platforms.config d02
+	    ./uefi-tools/uefi-build.sh -b $(UEFI_DEB_OR_REL) -c LinaroPkg/platforms.config d02
 
 .PHONY: clean-uefi
 clean-uefi:

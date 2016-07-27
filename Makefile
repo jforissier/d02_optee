@@ -98,7 +98,7 @@ distclean: distclean-grub
 # ARM Trusted Firmware
 #
 
-ARMTF_DEBUG = 1
+ARMTF_DEBUG = 0
 
 ARMTF_FLAGS := PLAT=d02
 
@@ -283,7 +283,7 @@ clean: clean-linux
 # UEFI
 #
 
-UEFI_DEBUG = 1
+UEFI_DEBUG = 0
 
 ifeq ($(UEFI_DEBUG),1)
 UEFI_DEB_OR_REL = DEBUG

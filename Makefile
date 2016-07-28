@@ -17,6 +17,17 @@ endif
 CROSS_COMPILE32 ?= ccache arm-linux-gnueabihf-
 CROSS_COMPILE64 ?= ccache aarch64-linux-gnu-
 
+# Secure Kernel: 32 or 64-bits
+SK ?= 64
+# Secure User mode (TAs): 32 or 64-bits
+SU ?= 64
+
+ifeq ($(SU),32)
+CROSS_COMPILE_TA=$(CROSS_COMPILE32)
+else
+CROSS_COMPILE_TA=$(CROSS_COMPILE64)
+endif
+
 # Where the various Linux files get installed by "make install" (kernel
 # modules, TEE client library, test applications...).
 # This has to be merged with the root FS of the linux distribution you will
@@ -146,7 +157,9 @@ optee-os-flags := PLATFORM=d02
 optee-os-flags += DEBUG=0
 optee-os-flags += CFG_TEE_CORE_LOG_LEVEL=$(CFG_TEE_CORE_LOG_LEVEL) # 0=none 1=err 2=info 3=debug 4=flow
 optee-os-flags += CFG_TEE_TA_LOG_LEVEL=3
+ifeq ($(SK),64)
 optee-os-flags += CFG_ARM64_core=y
+endif
 optee-os-flags += CROSS_COMPILE32="$(CROSS_COMPILE32)" CROSS_COMPILE64="$(CROSS_COMPILE64)"
 
 .PHONY: optee-os
@@ -202,8 +215,8 @@ clean: clean-optee-client
 optee-test-deps := optee-os
 
 optee-test-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)" \
-		    CROSS_COMPILE_TA="$(CROSS_COMPILE64)" \
-		    TA_DEV_KIT_DIR=$(CURDIR)/optee_os/out/arm-plat-d02/export-ta_arm64 \
+		    CROSS_COMPILE_TA="$(CROSS_COMPILE_TA)" \
+		    TA_DEV_KIT_DIR=$(CURDIR)/optee_os/out/arm-plat-d02/export-ta_arm$(SU) \
 		    O=$(CURDIR)/optee_test/out
 #optee-test-flags += CFG_TEE_TA_LOG_LEVEL=3
 
@@ -336,8 +349,8 @@ clean: clean-uefi
 #
 
 aes-perf-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)" \
-                  CROSS_COMPILE_TA="$(CROSS_COMPILE64)" \
-                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm64
+                  CROSS_COMPILE_TA="$(CROSS_COMPILE_TA)" \
+                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm$(SU)
 
 .PHONY: aes-perf
 aes-perf: optee-os optee-client
@@ -361,8 +374,8 @@ clean: clean-aes-perf
 #
 
 sha-perf-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)" \
-                  CROSS_COMPILE_TA="$(CROSS_COMPILE64)" \
-                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm64
+                  CROSS_COMPILE_TA="$(CROSS_COMPILE_TA)" \
+                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm$(SU)
 
 .PHONY: sha-perf
 sha-perf: optee-os optee-client

@@ -5,8 +5,6 @@
 The purpose of this repository is to build OP-TEE and associated software for
 the Hisilicon D02 board.
 
-** THIS IS WORK IN PROGRESS AND NOT WORKING YET **
-
 ## What's in here
 
 Here you will find:

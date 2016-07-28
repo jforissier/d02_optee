@@ -362,6 +362,8 @@ install-aes-perf:
 	$(ECHO) '  INSTALL $@'
 	$(Q)$(MAKE) -C aes-perf $(aes-perf-flags) install DESTDIR=$(DESTDIR)
 
+install-only: install-aes-perf
+
 .PHONY: clean-aes-perf
 clean-aes-perf:
 	$(ECHO) '  CLEAN   $@'
@@ -386,6 +388,8 @@ sha-perf: optee-os optee-client
 install-sha-perf:
 	$(ECHO) '  INSTALL $@'
 	$(Q)$(MAKE) -C sha-perf $(sha-perf-flags) install DESTDIR=$(DESTDIR)
+
+install-only: install-sha-perf
 
 .PHONY: clean-sha-perf
 clean-sha-perf:

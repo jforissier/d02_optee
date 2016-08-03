@@ -22,6 +22,9 @@ SK ?= 64
 # Secure User mode (TAs): 32 or 64-bits
 SU ?= 64
 
+# Note: to build OP-TEE with pager:
+# make SK=32 SU=32 CFG_WITH_PAGER=y #CFG_TEE_CORE_LOG_LEVEL=3 CFG_TEE_CORE_DEBUG=1
+
 ifeq ($(SU),32)
 CROSS_COMPILE_TA=$(CROSS_COMPILE32)
 else

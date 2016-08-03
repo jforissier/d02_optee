@@ -165,7 +165,7 @@ optee-os-flags += CROSS_COMPILE32="$(CROSS_COMPILE32)" CROSS_COMPILE64="$(CROSS_
 .PHONY: optee-os
 optee-os:
 	$(ECHO) '  BUILD   $@'
-	$(Q)$(MAKE) -C optee_os $(optee-os-flags)
+	$(Q)$(MAKE) -C optee_os $(optee-os-flags) all mem_usage
 
 .PHONY: clean-optee-os
 clean-optee-os:

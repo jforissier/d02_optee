@@ -49,14 +49,11 @@ endif
 
 DESTDIR = $(CURDIR)/install
 
-.PHONY: install
-install: all install-only
-
-.PHONY:
-install-only:
-
+.PHONY: all
 all: arm-trusted-firmware grub linux optee-client optee-os uefi optee-test \
      aes-perf sha-perf
+
+.PHONY: install
 
 help:
 	@echo TODO
@@ -202,7 +199,7 @@ install-optee-client: optee-client
 	$(Q)mkdir -p $(DESTDIR)/etc/rc5.d
 	$(Q)ln -sf /etc/init.d/optee $(DESTDIR)/etc/rc5.d/S99optee
 
-install-only: install-optee-client
+install: install-optee-client
 
 .PHONY: clean-optee-client
 clean-optee-client:
@@ -248,7 +245,7 @@ optee-test-do-patch:
 install-optee-test: optee-test
 	$(Q)$(MAKE) -C optee_test $(optee-test-flags) install DESTDIR=$(DESTDIR)
 
-install-only: install-optee-test
+install: install-optee-test
 
 .PHONY: clean-optee-test
 clean-optee-test:
@@ -274,7 +271,7 @@ install-linux: linux
 	$(Q)$(MAKE) -C linux $(linux-flags) modules_install INSTALL_MOD_PATH=$(DESTDIR)
 	$(Q)$(MAKE) -C linux $(linux-flags) firmware_install INSTALL_FW_PATH=$(DESTDIR)/lib/firmware
 
-install-only: install-linux
+install: install-linux
 
 .PHONY: linux
 linux: linux/.config
@@ -365,7 +362,7 @@ install-aes-perf:
 	$(ECHO) '  INSTALL $@'
 	$(Q)$(MAKE) -C aes-perf $(aes-perf-flags) install DESTDIR=$(DESTDIR)
 
-install-only: install-aes-perf
+install: install-aes-perf
 
 .PHONY: clean-aes-perf
 clean-aes-perf:
@@ -392,7 +389,7 @@ install-sha-perf:
 	$(ECHO) '  INSTALL $@'
 	$(Q)$(MAKE) -C sha-perf $(sha-perf-flags) install DESTDIR=$(DESTDIR)
 
-install-only: install-sha-perf
+install: install-sha-perf
 
 .PHONY: clean-sha-perf
 clean-sha-perf:

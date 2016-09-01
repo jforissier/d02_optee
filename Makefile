@@ -57,7 +57,7 @@ DESTDIR = $(CURDIR)/install
 
 .PHONY: all
 all: arm-trusted-firmware grub linux optee-client optee-os uefi optee-test \
-     aes-perf sha-perf
+     aes-perf sha-perf tee-stats
 
 .PHONY: install
 
@@ -163,6 +163,9 @@ optee-os-flags := PLATFORM=d02
 optee-os-flags += DEBUG=0
 optee-os-flags += CFG_TEE_CORE_LOG_LEVEL=$(CFG_TEE_CORE_LOG_LEVEL) # 0=none 1=err 2=info 3=debug 4=flow
 optee-os-flags += CFG_TEE_TA_LOG_LEVEL=3
+optee-os-flags += CFG_RPMB_FS=y
+optee-os-flags += CFG_SQL_FS=y
+optee-os-flags += CFG_WITH_STATS=y # Needed for tee-stats
 ifeq ($(SK),64)
 optee-os-flags += CFG_ARM64_core=y
 endif
@@ -186,6 +189,7 @@ clean: clean-optee-os
 
 optee-client-flags := CROSS_COMPILE="$(CROSS_COMPILE64)"
 #optee-client-flags += CFG_TEE_SUPP_LOG_LEVEL=4 CFG_TEE_CLIENT_LOG_LEVEL=4
+optee-client-flags += CFG_SQL_FS=y
 
 .PHONY: optee-client
 optee-client:
@@ -403,4 +407,30 @@ clean-sha-perf:
 	$(Q)rm -rf sha-perf/out
 
 clean: clean-sha-perf
+
+#
+# tee-stats (statistics tool, client side of static TA:
+# core/arch/arm/sta/stats.c)
+#
+
+tee-stats-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)"
+
+.PHONY: tee-stats
+tee-stats: optee-client
+	$(ECHO) '  BUILD   $@'
+	$(Q)$(MAKE) -C tee-stats $(tee-stats-flags)
+
+.PHONY: install-tee-stats
+install-tee-stats:
+	$(ECHO) '  INSTALL $@'
+	$(Q)$(MAKE) -C tee-stats $(tee-stats-flags) install DESTDIR=$(DESTDIR)
+
+install: install-tee-stats
+
+.PHONY: clean-tee-stats
+clean-tee-stats:
+	$(ECHO) '  CLEAN   $@'
+	$(Q)rm -rf tee-stats/out
+
+clean: clean-tee-stats
 

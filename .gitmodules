@@ -26,12 +26,6 @@
 	path = uefi
 	url = https://github.com/jforissier/uefi
 	branch = d02-optee
-[submodule "aes-perf"]
-	path = aes-perf
-	url = https://github.com/linaro-swg/aes-perf.git
-[submodule "sha-perf"]
-	path = sha-perf
-	url = https://github.com/linaro-swg/sha-perf.git
 [submodule "tee-stats"]
 	path = tee-stats
 	url = https://github.com/jforissier/tee-stats.git

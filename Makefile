@@ -57,7 +57,7 @@ DESTDIR = $(CURDIR)/install
 
 .PHONY: all
 all: arm-trusted-firmware grub linux optee-client optee-os uefi optee-test \
-     aes-perf sha-perf tee-stats
+     tee-stats
 
 .PHONY: install
 
@@ -353,60 +353,6 @@ clean-uefi:
 	$(Q)rm -f $(UEFI_FIP) ; cd $(UEFI_BIN) && git co fip.bin
 
 clean: clean-uefi
-
-#
-# aes-perf (AES crypto performance test)
-#
-
-aes-perf-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)" \
-                  CROSS_COMPILE_TA="$(CROSS_COMPILE_TA)" \
-                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm$(SU)
-
-.PHONY: aes-perf
-aes-perf: optee-os optee-client
-	$(ECHO) '  BUILD   $@'
-	$(Q)$(MAKE) -C aes-perf $(aes-perf-flags)
-
-.PHONY: install-aes-perf
-install-aes-perf:
-	$(ECHO) '  INSTALL $@'
-	$(Q)$(MAKE) -C aes-perf $(aes-perf-flags) install DESTDIR=$(DESTDIR)
-
-install: install-aes-perf
-
-.PHONY: clean-aes-perf
-clean-aes-perf:
-	$(ECHO) '  CLEAN   $@'
-	$(Q)rm -rf aes-perf/out
-
-clean: clean-aes-perf
-
-#
-# sha-perf (SHA crypto performance test)
-#
-
-sha-perf-flags := CROSS_COMPILE_HOST="$(CROSS_COMPILE64)" \
-                  CROSS_COMPILE_TA="$(CROSS_COMPILE_TA)" \
-                  TA_DEV_KIT_DIR=$(PWD)/optee_os/out/arm-plat-d02/export-ta_arm$(SU)
-
-.PHONY: sha-perf
-sha-perf: optee-os optee-client
-	$(ECHO) '  BUILD   $@'
-	$(Q)$(MAKE) -C sha-perf $(sha-perf-flags)
-
-.PHONY: install-sha-perf
-install-sha-perf:
-	$(ECHO) '  INSTALL $@'
-	$(Q)$(MAKE) -C sha-perf $(sha-perf-flags) install DESTDIR=$(DESTDIR)
-
-install: install-sha-perf
-
-.PHONY: clean-sha-perf
-clean-sha-perf:
-	$(ECHO) '  CLEAN   $@'
-	$(Q)rm -rf sha-perf/out
-
-clean: clean-sha-perf
 
 #
 # tee-stats (statistics tool, client side of static TA:

@@ -163,8 +163,12 @@ optee-os-flags := PLATFORM=d02
 optee-os-flags += DEBUG=0
 optee-os-flags += CFG_TEE_CORE_LOG_LEVEL=$(CFG_TEE_CORE_LOG_LEVEL) # 0=none 1=err 2=info 3=debug 4=flow
 optee-os-flags += CFG_TEE_TA_LOG_LEVEL=3
-optee-os-flags += CFG_RPMB_FS=y
-optee-os-flags += CFG_SQL_FS=y
+CFG_RPMB_FS ?= y
+ifeq ($(CFG_RPMB_FS),y)
+optee-os-flags += CFG_RPMB_FS=y CFG_RPMB_WRITE_KEY=y
+endif
+CFG_SQL_FS ?= y
+optee-os-flags += CFG_SQL_FS=$(CFG_SQL_FS)
 optee-os-flags += CFG_WITH_STATS=y # Needed for tee-stats
 ifeq ($(SK),64)
 optee-os-flags += CFG_ARM64_core=y
